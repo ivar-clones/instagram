@@ -41,6 +41,7 @@ func main() {
 	rg.Use(middleware.Auth())
 	rg.POST("/posts", handler.CreatePost)
 	rg.GET("/posts", handler.GetAllPosts)
+	rg.GET("/posts/username/:username", handler.GetAllPostsOfUser)
 
 	if err := r.Run(":8080"); err != nil {
 		panic("error creating server: " + err.Error())

@@ -10,6 +10,8 @@ import (
 
 type PostHandler interface {
 	CreatePost(c *gin.Context)
+	GetAllPosts(c *gin.Context)
+	GetAllPostsOfUser(c *gin.Context)
 }
 
 func (h *handler) CreatePost(c *gin.Context) {
@@ -32,6 +34,18 @@ func (h *handler) CreatePost(c *gin.Context) {
 
 func (h *handler) GetAllPosts(c *gin.Context) {
 	username := c.GetString("username")
+	posts, err := h.s.GetAllPosts(username)
+	if err != nil {
+		log.Println("error getting all posts: ", err.Error())
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"data": posts})
+}
+
+func (h *handler) GetAllPostsOfUser(c *gin.Context) {
+	username := c.Param("username")
 	posts, err := h.s.GetAllPosts(username)
 	if err != nil {
 		log.Println("error getting all posts: ", err.Error())
