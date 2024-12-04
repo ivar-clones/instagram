@@ -6,6 +6,7 @@ import (
 
 type Database interface {
 	UserRepository
+	PostRepository
 }
 
 type database struct {
@@ -17,4 +18,3 @@ func New(db *pgxpool.Pool) Database {
 		db: db,
 	}
 }
-

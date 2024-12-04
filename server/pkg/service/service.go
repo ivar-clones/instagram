@@ -4,6 +4,7 @@ import "instagram/pkg/database"
 
 type Service interface {
 	UserService
+	PostService
 }
 
 type service struct {

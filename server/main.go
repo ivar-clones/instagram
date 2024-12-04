@@ -4,6 +4,7 @@ import (
 	"context"
 	"instagram/pkg/database"
 	"instagram/pkg/handler"
+	"instagram/pkg/middleware"
 	"instagram/pkg/service"
 	"os"
 	"strings"
@@ -35,6 +36,11 @@ func main() {
 
 	r.POST("/signup", handler.Signup)
 	r.POST("/login", handler.Login)
+
+	rg := r.Group("/api/v1")
+	rg.Use(middleware.Auth())
+	rg.POST("/posts", handler.CreatePost)
+	rg.GET("/posts", handler.GetAllPosts)
 
 	if err := r.Run(":8080"); err != nil {
 		panic("error creating server: " + err.Error())
