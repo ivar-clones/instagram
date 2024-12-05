@@ -12,6 +12,7 @@ type PostRepository interface {
 	CreatePost(post model.PostDB) error
 	GetAllPosts(username string) ([]model.PostDB, error)
 	DeletePost(username string, id int) error
+	GetPost(id int) (model.PostDB, error)
 }
 
 func (d *database) CreatePost(post model.PostDB) error {
@@ -54,4 +55,21 @@ func (d *database) DeletePost(username string, id int) error {
 	}
 
 	return nil
+}
+
+func (d *database) GetPost(id int) (model.PostDB, error) {
+	rows, err := d.db.Query(context.Background(), "select * from posts where id = $1", id)
+	if err != nil {
+		log.Println("error fetching posts: ", err.Error())
+		return model.PostDB{}, err
+	}
+	defer rows.Close()
+
+	post, err := pgx.CollectOneRow(rows, pgx.RowToStructByName[model.PostDB])
+	if err != nil {
+		log.Println("error collecting row: ", err.Error())
+		return model.PostDB{}, err
+	}
+
+	return post, nil
 }

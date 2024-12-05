@@ -9,6 +9,7 @@ type PostService interface {
 	CreatePost(postToCreate model.CreatePostRequest, username string) error
 	GetAllPosts(username string) ([]model.PostResponse, error)
 	DeletePost(username string, id int) error
+	GetPost(id int) (model.PostResponse, error)
 }
 
 func (s *service) CreatePost(postToCreate model.CreatePostRequest, username string) error {
@@ -45,4 +46,16 @@ func (s *service) DeletePost(username string, id int) error {
 	}
 
 	return nil
+}
+
+func (s *service) GetPost(id int) (model.PostResponse, error) {
+	dbPost, err := s.repo.GetPost(id)
+	if err != nil {
+		log.Println("error fetching all posts: ", err.Error())
+		return model.PostResponse{}, err
+	}
+
+	post := model.MapFromPostDBToPostResponse(dbPost)
+
+	return post, nil
 }

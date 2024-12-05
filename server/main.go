@@ -43,6 +43,7 @@ func main() {
 	rg.GET("/posts", handler.GetAllPosts)
 	rg.GET("/posts/username/:username", handler.GetAllPostsOfUser)
 	rg.DELETE("/posts/:id", handler.DeletePost)
+	rg.GET("/posts/:id", handler.GetPost)
 
 	if err := r.Run(":8080"); err != nil {
 		panic("error creating server: " + err.Error())

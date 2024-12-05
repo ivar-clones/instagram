@@ -13,6 +13,8 @@ type PostHandler interface {
 	CreatePost(c *gin.Context)
 	GetAllPosts(c *gin.Context)
 	GetAllPostsOfUser(c *gin.Context)
+	DeletePost(c *gin.Context)
+	GetPost(c *gin.Context)
 }
 
 func (h *handler) CreatePost(c *gin.Context) {
@@ -73,4 +75,22 @@ func (h *handler) DeletePost(c *gin.Context) {
 	}
 
 	c.Status(http.StatusOK)
+}
+
+func (h *handler) GetPost(c *gin.Context) {
+	id, err := strconv.Atoi(c.Param("id"))
+	if err != nil {
+		log.Println("invalid post id: ", err.Error())
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	post, err := h.s.GetPost(id)
+	if err != nil {
+		log.Println("error getting post: ", err.Error())
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"data": post})
 }
