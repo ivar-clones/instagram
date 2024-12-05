@@ -8,6 +8,7 @@ import (
 type PostService interface {
 	CreatePost(postToCreate model.CreatePostRequest, username string) error
 	GetAllPosts(username string) ([]model.PostResponse, error)
+	DeletePost(username string, id int) error
 }
 
 func (s *service) CreatePost(postToCreate model.CreatePostRequest, username string) error {
@@ -35,4 +36,13 @@ func (s *service) GetAllPosts(username string) ([]model.PostResponse, error) {
 	}
 
 	return posts, nil
+}
+
+func (s *service) DeletePost(username string, id int) error {
+	if err := s.repo.DeletePost(username, id); err != nil {
+		log.Println("error deleting post: ", err.Error())
+		return err
+	}
+
+	return nil
 }

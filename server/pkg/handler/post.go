@@ -4,6 +4,7 @@ import (
 	"instagram/pkg/model"
 	"log"
 	"net/http"
+	"strconv"
 
 	"github.com/gin-gonic/gin"
 )
@@ -54,4 +55,22 @@ func (h *handler) GetAllPostsOfUser(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, gin.H{"data": posts})
+}
+
+func (h *handler) DeletePost(c *gin.Context) {
+	username := c.GetString("username")
+	id, err := strconv.Atoi(c.Param("id"))
+	if err != nil {
+		log.Println("invalid post id: ", err.Error())
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	if err := h.s.DeletePost(username, id); err != nil {
+		log.Println("error deleting post: ", err.Error())
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.Status(http.StatusOK)
 }

@@ -11,6 +11,7 @@ import (
 type PostRepository interface {
 	CreatePost(post model.PostDB) error
 	GetAllPosts(username string) ([]model.PostDB, error)
+	DeletePost(username string, id int) error
 }
 
 func (d *database) CreatePost(post model.PostDB) error {
@@ -44,4 +45,13 @@ func (d *database) GetAllPosts(username string) ([]model.PostDB, error) {
 	}
 
 	return posts, nil
+}
+
+func (d *database) DeletePost(username string, id int) error {
+	if _, err := d.db.Exec(context.Background(), "delete from posts where id = $1 and author = $2", id, username); err != nil {
+		log.Println("error deleting post: ", err.Error())
+		return err
+	}
+
+	return nil
 }
