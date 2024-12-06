@@ -26,15 +26,14 @@ func (h *handler) Signup(c *gin.Context) {
 	if err != nil {
 		log.Println("error creating user: ", err.Error())
 		if errors.Is(err, constants.ErrUsernameAlreadyTaken) {
-			c.JSON(http.StatusBadRequest, gin.H{"error": "username already taken"})
+			c.JSON(http.StatusBadRequest, gin.H{"error": "Username already taken"})
 			return
 		}
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 
-	c.SetCookie("token", token, 3600, "/", "localhost", false, false)
-	c.Redirect(http.StatusSeeOther, "/")
+	c.JSON(http.StatusOK, gin.H{"token": token, "username": authRequest.Username})
 }
 
 func (h *handler) Login(c *gin.Context) {
@@ -49,13 +48,12 @@ func (h *handler) Login(c *gin.Context) {
 	if err != nil {
 		log.Println("error logging in user: ", err.Error())
 		if errors.Is(err, constants.ErrIncorrectPassword) {
-			c.Status(http.StatusUnauthorized)
+			c.JSON(http.StatusUnauthorized, gin.H{"error": "Invalid username or password"})
 			return
 		}
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 
-	c.SetCookie("token", token, 3600, "/", "localhost", false, false)
-	c.Redirect(http.StatusSeeOther, "/")
+	c.JSON(http.StatusOK, gin.H{"token": token, "username": authRequest.Username})
 }

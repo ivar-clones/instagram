@@ -2,8 +2,13 @@ import "./App.css";
 import { ModeToggle } from "@/components/mode-toggle";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/app-sidebar";
+import { usePosts } from "./service/post";
 
 function App() {
+  const { data } = usePosts();
+
+  console.log("data: ", data);
+
   return (
     <>
       <SidebarProvider>
